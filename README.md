@@ -19,7 +19,8 @@ sam deploy --guided --capabilities CAPABILITY_NAMED_IAM
 **ローカル実行**
 
 ```sh
-sam local invoke --env-vars resources/env.json --event resources/event.json
+sam build --use-container \
+&& sam local invoke --env-vars resources/env.json --event resources/event.json
 ```
 
 ## デプロイ & 実行

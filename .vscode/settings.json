@@ -1,0 +1,25 @@
+{
+  "editor.formatOnSave": true,
+  "files.autoSave": "off",
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "python.linting.lintOnSave": true,
+  "[python]": {
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": true,
+    "editor.tabSize": 4
+  },
+  "python.linting.pylintEnabled": true,
+  "python.linting.mypyEnabled": false,
+  "python.linting.flake8Enabled": true,
+  "python.linting.flake8Args": [
+    "--max-line-length=120",
+    "--max-complexity",
+    "20"
+  ],
+  "python.linting.pylintArgs": [
+    "--disable=missing-module-docstring,missing-class-docstring,missing-function-docstring,too-few-public-methods"
+  ],
+  "python.formatting.provider": "autopep8",
+  "python.formatting.autopep8Args": ["--aggressive", "--aggressive"]
+}
