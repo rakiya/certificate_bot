@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: certificate-bot
+
+Parameters:
+  Environment:
+    Type: String
+    AllowedValues:
+      - production
+      - staging
+      - development
+  SlackUrl:
+    Type: String
+  CertificateArn:
+    Type: String
+  Event:
+    Type: String
+
+Globals:
+  Function:
+    Timeout: 300
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        CERTIFICATE_BOT_SLACK_URL: !Ref SlackUrl
+        CERTIFICATE_ARN: !Ref CertificateArn
+
+Resources:
+  CertificateBotFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: src/
+      Handler: main.main.lambda_handler
+      Runtime: python3.9
+      Architectures:
+        - x86_64
+      Role: !GetAtt RoleForCertificateBot.Arn
+      Events:
+        CertificateBot:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 19 1 */2 ? *)
+            Input: !Ref Event
+
+  RoleForCertificateBot:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: "role-for-CertificateBot"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: "sts:AssumeRole"
+      Policies:
+        - PolicyName: PolicyForCertificateBot
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: "Allow"
+                Action:
+                  - "route53:ListHostedZones"
+                  - "route53:ChangeResourceRecordSets"
+                  - "route53:GetChange"
+                  - "acm:ImportCertificate"
+                  - "acm:RenewCertificate"
+                  - "acm:AddTagsToCertificate"
+                Resource:
+                  - "*"
